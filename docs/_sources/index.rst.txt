@@ -6,9 +6,15 @@
 Trust-ML
 ========
 
+Trust-ml is a machine learning-driven adversarial data generator that introduces naturally occurring distortions to the original dataset to generate an adversarial subset. This framework provides a custom mix of distrotions for evaluating robustness of image classification models against both true negatives and false positives.
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :hidden:
+
+   installation
+   usage
+   overview
+
 
 
 
