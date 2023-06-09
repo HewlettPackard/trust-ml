@@ -7,6 +7,10 @@
   <title>Trust-ML &mdash; Trust-ml 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+      <link rel="stylesheet" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
+      <link rel="stylesheet" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
+      <link rel="stylesheet" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -15,6 +19,8 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -44,6 +50,8 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 
         </div>
@@ -73,6 +81,27 @@
   <section id="trust-ml">
 <h1>Trust-ML<a class="headerlink" href="#trust-ml" title="Permalink to this headline"></a></h1>
 <p>Trust-ml is a machine learning-driven adversarial data generator that introduces naturally occurring distortions to the original dataset to generate an adversarial subset. This framework provides a custom mix of distrotions for evaluating robustness of image classification models against both true negatives and false positives.</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="_images/image-1.png"><img alt="Difference between RLAB and competitors" src="_images/image-1.png" style="width: 542.6999999999999px; height: 225.0px;" /></a>
+<figcaption>
+<p><span class="caption-text">Difference between RLAB and competitors</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>RLAB unlike the existing traditional adversarial training approaches that use hand crafted attack strategy to generate adversarial samples, learns an attack strategy to generate more efficient adversarial samples.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="_images/image-2.png"><img alt="RLAB Workflow" src="_images/image-2.png" style="width: 730.6px; height: 252.60000000000002px;" /></a>
+<figcaption>
+<p><span class="caption-text">RLAB Workflow</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>The above figure shows the overall flow of the proposed method.  Given a data sample, RLAB divides the input into a set of grid and performs sensitivity analysis.  The agent performs two actions, one to find the patch to which distortions can be added and the patch from which earlier added distortion can be removed.  This is performed iteratively until the model misclassifies the given data sample.  The final sample with the perturbations in it is called an adversarial sample that contains information about the vulnerability of the model.</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="_images/Visual-Comparison.jpg"><img alt="RLAB's distortion comparison with Patch Attack and Square Attack from the literature" src="_images/Visual-Comparison.jpg" style="width: 583.5px; height: 344.8px;" /></a>
+<figcaption>
+<p><span class="caption-text">RLAB’s distortion comparison with Patch Attack and Square Attack from the literature</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p><a class="reference external" href="https://github.com/HewlettPackard/trust-ml/">Github Repository</a> of source code and documentation</p>
 <div class="toctree-wrapper compound">
 </div>
 </section>
