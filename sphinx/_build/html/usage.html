@@ -11,7 +11,7 @@
       <link rel="stylesheet" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
-<jinja2.runtime.BlockReference object at 0x0000019F1A724370>
+<jinja2.runtime.BlockReference object at 0x0000023C114E88B0>
 <script type="application/ld+json">
 {
   "layout": "index-template",
@@ -69,7 +69,6 @@
 
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Overview" href="overview.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
@@ -93,11 +92,12 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html">Code</a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dataset-structure">Dataset Structure</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -126,6 +126,22 @@
              
   <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h1>
+<section id="dataset-structure">
+<h2>Dataset Structure<a class="headerlink" href="#dataset-structure" title="Permalink to this headline"></a></h2>
+<p>Datasets generated with Trust-ML are provided as pickle files. For instance,
+see our data provided on <a class="reference external" href="https://zenodo.org/record/8034833">Zenodo</a>.
+This data should be loaded through Python’s <code class="code docutils literal notranslate"><span class="pre">pickle</span></code> module. The
+structure is a list as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Image</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Label</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Sample</span> <span class="n">ID</span> <span class="mi">1</span>
+<span class="n">Image</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Label</span> <span class="mi">2</span><span class="p">,</span> <span class="n">Sample</span> <span class="n">ID</span> <span class="mi">2</span>
+<span class="o">...</span>
+<span class="n">Image</span> <span class="n">N</span><span class="p">,</span> <span class="n">Label</span> <span class="n">N</span><span class="p">,</span> <span class="n">Sample</span> <span class="n">ID</span> <span class="n">N</span>
+</pre></div>
+</div>
+<p>Each image is a NumPy array of shape <code class="code docutils literal notranslate"><span class="pre">H</span> <span class="pre">x</span> <span class="pre">W</span> <span class="pre">x</span> <span class="pre">3</span></code>, each label is an
+integer-coded class label, and each sample ID has a correspondence with a
+sample in the original dataset.</p>
+</section>
 </section>
 
 
@@ -133,7 +149,6 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="overview.html" class="btn btn-neutral float-right" title="Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
