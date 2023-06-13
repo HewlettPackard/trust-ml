@@ -1,0 +1,2 @@
+delta_l2, delta_prob, m_avg
+2023-06-13 14:52:29 l2: 175.46, n_steps: 63, is_done: True
