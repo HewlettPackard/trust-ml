@@ -24,10 +24,10 @@ sample in the original dataset.
 
 Run
 ---
-```
-:code:
-python main.py --model_path ./models/imagenet/architecture/resnet50_imagenet1000.pk --weight_path ./models/imagenet/weights/resnet50_imagenet1000.pt --dataset imagenet --dataset_path ./datasets/imagenet/val --log_dir ./results/imagenet/resnet50
+Example for having resnet-50 as the victim model with which the adversarial samples can be generated. 
 
-```
+    python main.py --model_path ./models/imagenet/architecture/resnet50_imagenet1000.pk --weight_path ./models/imagenet/weights/resnet50_imagenet1000.pt --dataset imagenet --dataset_path ./datasets/imagenet/val --log_dir ./results/imagenet/resnet50
+
+
 
 
