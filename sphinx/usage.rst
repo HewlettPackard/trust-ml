@@ -20,3 +20,17 @@ structure is a list as follows::
 Each image is a NumPy array of shape :code:`H x W x 3`, each label is an
 integer-coded class label, and each sample ID has a correspondence with a
 sample in the original dataset.
+
+Install Requirements
+--------------------
+```
+pip install -r requirements.txt
+```
+
+Run
+---
+```
+python main.py --model_path ./models/imagenet/architecture/resnet50_imagenet1000.pk --weight_path ./models/imagenet/weights/resnet50_imagenet1000.pt --dataset imagenet --dataset_path ./datasets/imagenet/val --log_dir ./results/imagenet/resnet50
+```
+
+
