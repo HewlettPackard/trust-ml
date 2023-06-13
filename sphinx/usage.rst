@@ -21,11 +21,6 @@ Each image is a NumPy array of shape :code:`H x W x 3`, each label is an
 integer-coded class label, and each sample ID has a correspondence with a
 sample in the original dataset.
 
-Install Requirements
---------------------
-```
-pip install -r requirements.txt
-```
 
 Run
 ---
