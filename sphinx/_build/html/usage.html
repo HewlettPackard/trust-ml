@@ -11,7 +11,7 @@
       <link rel="stylesheet" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
-<jinja2.runtime.BlockReference object at 0x000001B2D8D44E20>
+<jinja2.runtime.BlockReference object at 0x000001E9BE7A2D40>
 <script type="application/ld+json">
 {
   "layout": "index-template",
@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#dataset-structure">Dataset Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run">Run</a></li>
 </ul>
 </li>
 </ul>
@@ -141,6 +142,13 @@ structure is a list as follows:</p>
 <p>Each image is a NumPy array of shape <code class="code docutils literal notranslate"><span class="pre">H</span> <span class="pre">x</span> <span class="pre">W</span> <span class="pre">x</span> <span class="pre">3</span></code>, each label is an
 integer-coded class label, and each sample ID has a correspondence with a
 sample in the original dataset.</p>
+</section>
+<section id="run">
+<h2>Run<a class="headerlink" href="#run" title="Permalink to this headline"></a></h2>
+<p>Example for having resnet-50 as the victim model with which the adversarial samples can be generated.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python main.py --model_path ./models/imagenet/architecture/resnet50_imagenet1000.pk --weight_path ./models/imagenet/weights/resnet50_imagenet1000.pt --dataset imagenet --dataset_path ./datasets/imagenet/val --log_dir ./results/imagenet/resnet50
+</pre></div>
+</div>
 </section>
 </section>
 
