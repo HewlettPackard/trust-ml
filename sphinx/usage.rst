@@ -18,7 +18,7 @@ Example for having ResNet-50 as the victim model with which the adversarial samp
 
 * :code:`model_path`: path to a trained model
 * :code:`weight_path`: path to the weights of the trained model
-* :code:`dataset`: dataset name. *If missing, add the configuration for your own dataset in dataset.py*
+* :code:`dataset`: dataset name. *If missing, add the configuration for your own dataset in dataset.py (currently configured: cifar10, caltech101, imagenet) *
 * :code:`dataset_path`: path to a dataset
 * :code:`log_dir`: directory to log to
 
