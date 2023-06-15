@@ -4,9 +4,8 @@ Usage
 
 Run
 ---
-The framework can be run through :code:`main.py`. It takes in a path to a trained model and its weights,
-the path to a dataset, and the directory to log to. Example for having ResNet-50 as the victim model
-with which the adversarial samples can be generated:
+The framework can be run through :code:`main.py`. 
+Example for having ResNet-50 as the victim model with which the adversarial samples can be generated:
 
 .. code-block:: bash
 
@@ -14,6 +13,14 @@ with which the adversarial samples can be generated:
         --weight_path ./models/imagenet/weights/resnet50_imagenet1000.pt --dataset imagenet \
         --dataset_path ./datasets/imagenet/val --log_dir ./results/imagenet/resnet50
 
+
+**CLI arguments:**
+
+* :code:`model_path`: path to a trained model
+* :code:`weight_path`: path to the weights of the trained model
+* :code:`dataset`: dataset name. *If missing, add the configuration for your own dataset in dataset.py*
+* :code:`dataset_path`: path to a dataset
+* :code:`log_dir`: directory to log to
 
 Dataset Structure
 -----------------

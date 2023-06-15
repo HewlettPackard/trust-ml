@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Usage &mdash; Trust-ML 0.0.1 documentation</title>
@@ -11,7 +11,7 @@
       <link rel="stylesheet" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
-<jinja2.runtime.BlockReference object at 0x0000016879E73CA0>
+<jinja2.runtime.BlockReference object at 0x7fe14d65bac0>
 <script type="application/ld+json">
 {
   "layout": "index-template",
@@ -126,20 +126,27 @@
            <div itemprop="articleBody">
              
   <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h1>
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
 <section id="run">
-<h2>Run<a class="headerlink" href="#run" title="Permalink to this headline"></a></h2>
-<p>The framework can be run through <code class="code docutils literal notranslate"><span class="pre">main.py</span></code>. It takes in a path to a trained model and its weights,
-the path to a dataset, and the directory to log to. Example for having ResNet-50 as the victim model
-with which the adversarial samples can be generated:</p>
+<h2>Run<a class="headerlink" href="#run" title="Permalink to this heading"></a></h2>
+<p>The framework can be run through <code class="code docutils literal notranslate"><span class="pre">main.py</span></code>.
+Example for having ResNet-50 as the victim model with which the adversarial samples can be generated:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>main.py<span class="w"> </span>--model_path<span class="w"> </span>./models/imagenet/architecture/resnet50_imagenet1000.pk<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--weight_path<span class="w"> </span>./models/imagenet/weights/resnet50_imagenet1000.pt<span class="w"> </span>--dataset<span class="w"> </span>imagenet<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--dataset_path<span class="w"> </span>./datasets/imagenet/val<span class="w"> </span>--log_dir<span class="w"> </span>./results/imagenet/resnet50
 </pre></div>
 </div>
+<p><strong>CLI arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">model_path</span></code>: path to a trained model</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">weight_path</span></code>: path to the weights of the trained model</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">dataset</span></code>: dataset name. <em>If missing, add the configuration for your own dataset in dataset.py</em></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">dataset_path</span></code>: path to a dataset</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">log_dir</span></code>: directory to log to</p></li>
+</ul>
 </section>
 <section id="dataset-structure">
-<h2>Dataset Structure<a class="headerlink" href="#dataset-structure" title="Permalink to this headline"></a></h2>
+<h2>Dataset Structure<a class="headerlink" href="#dataset-structure" title="Permalink to this heading"></a></h2>
 <p>Datasets generated with Trust-ML are provided as pickle files. For instance,
 see our data provided on <a class="reference external" href="https://zenodo.org/record/8034833">Zenodo</a>.
 This data should be loaded through Python’s <code class="code docutils literal notranslate"><span class="pre">pickle</span></code> module. The
