@@ -11,7 +11,7 @@
       <link rel="stylesheet" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
-<jinja2.runtime.BlockReference object at 0x7fe14d65bac0>
+<jinja2.runtime.BlockReference object at 0x7f0d7de61580>
 <script type="application/ld+json">
 {
   "layout": "index-template",
@@ -136,11 +136,12 @@ Example for having ResNet-50 as the victim model with which the adversarial samp
 <span class="w">    </span>--dataset_path<span class="w"> </span>./datasets/imagenet/val<span class="w"> </span>--log_dir<span class="w"> </span>./results/imagenet/resnet50
 </pre></div>
 </div>
+<p>The related dataset is not included in the repository. Import it to the dataset path that you specify.</p>
 <p><strong>CLI arguments:</strong></p>
 <ul class="simple">
 <li><p><code class="code docutils literal notranslate"><span class="pre">model_path</span></code>: path to a trained model</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">weight_path</span></code>: path to the weights of the trained model</p></li>
-<li><p><code class="code docutils literal notranslate"><span class="pre">dataset</span></code>: dataset name. <em>If missing, add the configuration for your own dataset in dataset.py</em></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">dataset</span></code>: dataset name. <em>If missing, add the configuration for your own dataset in dataset.py (currently configured: cifar10, caltech101, imagenet)</em></p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">dataset_path</span></code>: path to a dataset</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">log_dir</span></code>: directory to log to</p></li>
 </ul>
