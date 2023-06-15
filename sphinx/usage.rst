@@ -13,6 +13,7 @@ Example for having ResNet-50 as the victim model with which the adversarial samp
         --weight_path ./models/imagenet/weights/resnet50_imagenet1000.pt --dataset imagenet \
         --dataset_path ./datasets/imagenet/val --log_dir ./results/imagenet/resnet50
 
+The related dataset is not included in the repository. Import it to the dataset path that you specify.
 
 **CLI arguments:**
 
@@ -21,6 +22,7 @@ Example for having ResNet-50 as the victim model with which the adversarial samp
 * :code:`dataset`: dataset name. *If missing, add the configuration for your own dataset in dataset.py (currently configured: cifar10, caltech101, imagenet) *
 * :code:`dataset_path`: path to a dataset
 * :code:`log_dir`: directory to log to
+
 
 Dataset Structure
 -----------------
