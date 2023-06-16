@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Search &mdash; Trust-ML 0.0.1 documentation</title>
+  <title>How RLAB Works &mdash; Trust-ML 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
-    
-<jinja2.runtime.BlockReference object at 0x7f9e65fef460>
+<jinja2.runtime.BlockReference object at 0x7f9e65fef910>
 <script type="application/ld+json">
 {
   "layout": "index-template",
@@ -67,10 +67,10 @@
 }
 </script>
 
-    <script src="_static/searchtools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" />
+    <link rel="prev" title="Trust-ML" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -85,16 +85,16 @@
             Trust-ML
           </a>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Home</a></li>
-<li class="toctree-l1"><a class="reference internal" href="rlab.html">How RLAB Works</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How RLAB Works</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 </ul>
@@ -113,8 +113,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Search</li>
+      <li class="breadcrumb-item active">How RLAB Works</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="_sources/rlab.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -122,22 +123,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <section id="how-rlab-works">
+<h1>How RLAB Works<a class="headerlink" href="#how-rlab-works" title="Permalink to this heading"></a></h1>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="_images/image-1.png"><img alt="Difference between RLAB and competitors" src="_images/image-1.png" style="width: 542.6999999999999px; height: 225.0px;" /></a>
+<figcaption>
+<p><span class="caption-text">Difference between RLAB and competitors</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>Unlike the existing traditional adversarial training approaches that use hand crafted attack strategy to generate adversarial samples, RLAB learns an attack strategy to generate more efficient adversarial samples.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="_images/image-2.png"><img alt="RLAB Workflow" src="_images/image-2.png" style="width: 730.6px; height: 252.60000000000002px;" /></a>
+<figcaption>
+<p><span class="caption-text">RLAB Workflow</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>The above figure shows the overall flow of the proposed method.  Given a data sample, RLAB divides the input into a set of grid and performs sensitivity analysis.  The agent performs two actions, one to find the patch to which distortions can be added and the patch from which earlier added distortion can be removed.  This is performed iteratively until the model misclassifies the given data sample.  The final sample with the perturbations in it is called an adversarial sample that contains information about the vulnerability of the model.</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="_images/Visual-Comparison.jpg"><img alt="RLAB's distortion comparison with Patch Attack and Square Attack from the literature" src="_images/Visual-Comparison.jpg" style="width: 583.5px; height: 344.8px;" /></a>
+<figcaption>
+<p><span class="caption-text">RLAB’s distortion comparison with Patch Attack and Square Attack from the literature</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+</section>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Trust-ML" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
@@ -159,14 +175,7 @@
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-  <script>
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script id="searchindexloader"></script>
-   
-
+  </script> 
 
 </body>
 </html>
