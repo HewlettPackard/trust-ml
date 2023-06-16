@@ -24,8 +24,33 @@ The related dataset is not included in the repository. Import it to the dataset 
 * :code:`log_dir`: directory to log to
 
 
-Dataset Structure
------------------
+Generated Dataset Structure
+---------------------------
+
+The generated distorted data will have the structure following the example provided in the repository::
+
+    └───imagenet
+        └───resnet50
+            └───gn
+                ├───episode_c0_00003
+                │       c0_x.jpg
+                │       c0_x.npy
+                │       c0_x_2_adv.jpg
+                │       c0_x_2_adv.npy
+                │       c0_x_4_adv.jpg
+                │       c0_x_4_adv.npy
+                │       c0_x_adv.jpg
+                │       c0_x_adv.npy
+                │       result_c0_00003.txt
+                │
+                ├───episode_c1_00011
+                ...
+
+
+There are both JPEG and NumPy arrays available with the applied distortions, as well as some metadata.
+
+Zenodo Dataset Structure
+------------------------
 
 Datasets generated with Trust-ML are provided as pickle files. For instance,
 see our data provided on `Zenodo <https://zenodo.org/record/8034833>`_.

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Usage &mdash; Trust-ML 0.0.1 documentation</title>
@@ -11,7 +11,7 @@
       <link rel="stylesheet" href="_static/panels-bootstrap.5fd3999ee7762ccc51105388f4a9d115.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" type="text/css" />
       <link rel="stylesheet" href="_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" type="text/css" />
-<jinja2.runtime.BlockReference object at 0x7f9e65febaf0>
+<jinja2.runtime.BlockReference object at 0x0000023CC6010880>
 <script type="application/ld+json">
 {
   "layout": "index-template",
@@ -97,7 +97,8 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#run">Run</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#dataset-structure">Dataset Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generated-dataset-structure">Generated Dataset Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#zenodo-dataset-structure">Zenodo Dataset Structure</a></li>
 </ul>
 </li>
 </ul>
@@ -127,9 +128,9 @@
            <div itemprop="articleBody">
              
   <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h1>
 <section id="run">
-<h2>Run<a class="headerlink" href="#run" title="Permalink to this heading"></a></h2>
+<h2>Run<a class="headerlink" href="#run" title="Permalink to this headline"></a></h2>
 <p>The framework can be run through <code class="code docutils literal notranslate"><span class="pre">main.py</span></code>.
 Example for having ResNet-50 as the victim model with which the adversarial samples can be generated:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>main.py<span class="w"> </span>--model_path<span class="w"> </span>./models/imagenet/architecture/resnet50_imagenet1000.pk<span class="w"> </span><span class="se">\</span>
@@ -147,8 +148,31 @@ Example for having ResNet-50 as the victim model with which the adversarial samp
 <li><p><code class="code docutils literal notranslate"><span class="pre">log_dir</span></code>: directory to log to</p></li>
 </ul>
 </section>
-<section id="dataset-structure">
-<h2>Dataset Structure<a class="headerlink" href="#dataset-structure" title="Permalink to this heading"></a></h2>
+<section id="generated-dataset-structure">
+<h2>Generated Dataset Structure<a class="headerlink" href="#generated-dataset-structure" title="Permalink to this headline"></a></h2>
+<p>The generated distorted data will have the structure following the example provided in the repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>└───imagenet
+    └───resnet50
+        └───gn
+            ├───episode_c0_00003
+            │       c0_x.jpg
+            │       c0_x.npy
+            │       c0_x_2_adv.jpg
+            │       c0_x_2_adv.npy
+            │       c0_x_4_adv.jpg
+            │       c0_x_4_adv.npy
+            │       c0_x_adv.jpg
+            │       c0_x_adv.npy
+            │       result_c0_00003.txt
+            │
+            ├───episode_c1_00011
+            ...
+</pre></div>
+</div>
+<p>There are both JPEG and NumPy arrays available with the applied distortions, as well as some metadata.</p>
+</section>
+<section id="zenodo-dataset-structure">
+<h2>Zenodo Dataset Structure<a class="headerlink" href="#zenodo-dataset-structure" title="Permalink to this headline"></a></h2>
 <p>Datasets generated with Trust-ML are provided as pickle files. For instance,
 see our data provided on <a class="reference external" href="https://zenodo.org/record/8034833">Zenodo</a>.
 This data should be loaded through Python’s <code class="code docutils literal notranslate"><span class="pre">pickle</span></code> module. The

@@ -2,7 +2,6 @@ numpy==1.19.5
 opencv-python==4.5.5.64
 torch==1.11.0
 torchvision==0.12.0
-torch2trt@git+https://github.com/NVIDIA-AI-IOT/torch2trt.git@v0.3.0
 tqdm==4.64.0
 scikit-image==0.19.2
 matplotlib==3.5.1

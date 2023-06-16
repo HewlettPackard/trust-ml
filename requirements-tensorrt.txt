@@ -1,0 +1,2 @@
+torch2trt@git+https://github.com/NVIDIA-AI-IOT/torch2trt.git@v0.3.0
+nvidia-tensorrt==8.4.0.6
