@@ -2,29 +2,36 @@ import os
 import pickle
 import cv2
 import numpy as np
-root_folder = "/lustre/mousavis/rl_tester/envs/neurips_2023_dataset/results/cifar10_GN_expo_corrupt_l2_vgg16/"  # Replace "root" with the actual path to your root folder
+
+# Replace "root" with the actual path to your root folder
+root_folder = "/lustre/mousavis/rl_tester/envs/neurips_2023_dataset/results/cifar10_GN_expo_corrupt_l2_vgg16/"
 pickle_file_path = os.path.join("/lustre/data/rlab_resutls/dataset_paper", 'cifar10/vgg16/gn/inc/numpy/')
+
+
 # cifar10_GB_expo_in1_corrupt_l2_inceptionv3 resnet50 vgg16
 # imagenet_GB_expo_in1_corrupt_16x16_l2_resnet50 ---> 'imagenet/resnet50/gb/inc/16x16/numpy/'
 
 def get_class(fn):
     classid = int(fn.split("_")[0][1:])
     return classid
-    
+
+
 files_ext = '.npy'
-levels = {'original':'x'+files_ext, 0:'x_adv'+files_ext,
-          # 1:'1_adv'+files_ext,
-          2:'2_adv'+files_ext,
-          3:'3_adv'+files_ext,
-          4:'4_adv'+files_ext,
-          5:'5_adv'+files_ext,
-          7:'7_adv'+files_ext,
-          8:'8_adv'+files_ext,
-          9:'9_adv'+files_ext,
-          10:'10_adv'+files_ext,
+levels = {'original': 'x' + files_ext,
+          0: 'x_adv' + files_ext,
+          2: '2_adv' + files_ext,
+          3: '3_adv' + files_ext,
+          4: '4_adv' + files_ext,
+          5: '5_adv' + files_ext,
+          7: '7_adv' + files_ext,
+          8: '8_adv' + files_ext,
+          9: '9_adv' + files_ext,
+          10: '10_adv' + files_ext,
           12: '12_adv' + files_ext,
           16: '16_adv' + files_ext,
-          20:'20_adv'+files_ext, 30:'30_adv'+files_ext, 40:'40_adv'+files_ext}
+          20: '20_adv' + files_ext,
+          30: '30_adv' + files_ext,
+          40: '40_adv' + files_ext}
 
 for level, ext in levels.items():
     print('Noise level {} is running...'.format(level))
@@ -45,12 +52,11 @@ for level, ext in levels.items():
                 image_id = os.path.basename(folder_path).split('_')[-1]
                 classid = get_class(file_name)
                 if files_ext == '.jpg':
-                     im = cv2.imread(file_path)
-                     im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+                    im = cv2.imread(file_path)
+                    im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
                 else:
                     im = np.load(file_path)
                 dataset.append([im, classid, image_id])
-
 
     if len(dataset) != 0:
         pickle_path = os.path.join(pickle_file_path, 'images_{}.pickle'.format(level))
@@ -63,8 +69,3 @@ for level, ext in levels.items():
         print("\tLevel {} is Done with {} samples, saved @ {}".format(level, len(dataset), pickle_path))
     else:
         print("\tLevel {} is Done with {} samples".format(level, len(dataset)))
-#     # Create the pickle file for the sample folder
-#     pickle_file_path = os.path.join(folder_path, 'images.pickle')
-#     with open(pickle_file_path, 'wb') as pickle_file:
-#         # Save the images list as a pickle object
-#         pickle.dump(images, pickle_file)

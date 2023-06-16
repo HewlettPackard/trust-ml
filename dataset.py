@@ -7,14 +7,17 @@ import torch.utils.data as data
 from PIL import Image
 import os
 
-def set_seed(seed) -> object:
+
+def set_seed(seed):
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
+
 def default_loader(path):
     return Image.open(path).convert('RGB')
+
 
 class _ImageFolder(data.Dataset):
     def __init__(self, root, transform=None, target_transform=None,
@@ -22,8 +25,8 @@ class _ImageFolder(data.Dataset):
         classes, class_to_idx = self._find_classes(root)
         imgs = self._make_dataset(root, class_to_idx)
         if len(imgs) == 0:
-            raise(RuntimeError("Found 0 images in subfolders of: " + root + "\n"
-                               "Supported image extensions are: " + ",".join(IMG_EXTENSIONS)))
+            raise RuntimeError("Found 0 images in subfolders of: " + root + "\n" +
+                               "Supported image extensions are: " + ",".join(IMG_EXTENSIONS))
 
         self.root = root
         self.imgs = imgs
@@ -69,7 +72,9 @@ class _ImageFolder(data.Dataset):
     def _is_valid_file(self, filename):
         return any(filename.endswith(extension) for extension in IMG_EXTENSIONS)
 
+
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif')
+
 
 def load_data(dataset_path, dataset_name, n_ex=None, train=None, seed=0, n_subsets=1):
     """
@@ -88,12 +93,11 @@ def load_data(dataset_path, dataset_name, n_ex=None, train=None, seed=0, n_subse
         worker_seed = seed
         np.random.seed(worker_seed)
         random.seed(worker_seed)
+
     g = torch.Generator()
     g.manual_seed(seed)
 
     if dataset_name.lower() == 'cifar10':
-        # mean = [0.5, 0.5, 0.5]
-        # std = [0.5, 0.5, 0.5]
         mean = (0.4914, 0.4822, 0.4465)
         std = (0.2471, 0.2435, 0.2616)
         img_size = (32, 32)
@@ -107,7 +111,6 @@ def load_data(dataset_path, dataset_name, n_ex=None, train=None, seed=0, n_subse
         mean = [0.485, 0.456, 0.406]
         std = [0.229, 0.224, 0.225]
         img_size = (224, 224)
-        # transforms.Lambda(lambda img: img if img.mode == 'RGB' else img.convert('RGB')),
         transform = transforms.Compose([transforms.Resize(img_size),
                                         transforms.ToTensor(),
                                         transforms.Normalize(mean=mean,
@@ -130,13 +133,16 @@ def load_data(dataset_path, dataset_name, n_ex=None, train=None, seed=0, n_subse
         dataset = torch.utils.data.Subset(dataset, torch.arange(n_ex))
 
     if n_subsets == 1:
-        dataset_data_loader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, num_workers=1, worker_init_fn=seed_worker, generator=g,)
+        dataset_data_loader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=True, num_workers=1,
+                                                          worker_init_fn=seed_worker, generator=g)
     elif n_subsets > 1:
         l = len(dataset)
         num_samples_per_set = len(dataset) // n_subsets
         indices = torch.arange(l)
-        dataset_data_loader = [torch.utils.data.DataLoader(torch.utils.data.Subset(dataset, indices[ndx: min(ndx + num_samples_per_set, l)]), batch_size=1, shuffle=True, worker_init_fn=seed_worker, generator=g,) for ndx in
-                   range(0, l, num_samples_per_set)]
+        dataset_data_loader = [torch.utils.data.DataLoader(
+            torch.utils.data.Subset(dataset, indices[ndx: min(ndx + num_samples_per_set, l)]), batch_size=1,
+            shuffle=True, worker_init_fn=seed_worker, generator=g) for ndx in
+                               range(0, l, num_samples_per_set)]
     else:
         raise ValueError("`n_subsets` should be >=1.")
 

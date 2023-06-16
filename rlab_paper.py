@@ -1,27 +1,24 @@
 import os
 import random
-import time
+import shutil
+import gc
 from copy import deepcopy
 from datetime import datetime
 from itertools import cycle
 import numpy as np
 import torch
-from torchvision import transforms as T
 import torch.nn as nn
+from torchvision import transforms as T
 from skimage.util import random_noise as g_noise
 from tqdm.auto import trange
-import shutil
-from utils import load_model
-import cv2
-import torchvision.transforms as transforms
-from utils import clip_channel_wise_4d, compute_norm_4d, get_top_prob_vectors, get_delta_prob_dilutions, topk, \
-    un_standardize, to_original_format, remove_elements, Logger, save_step # save_img
 
-import gc
+from utils import clip_channel_wise_4d, compute_norm_4d, get_top_prob_vectors, get_delta_prob_dilutions, topk, \
+    un_standardize, to_original_format, Logger
+
 
 class RLAB:
     def __init__(self, classifier, agent_config, device, ds_info):
-        
+
         self.classifier = classifier
         self.patch_size = agent_config['patch_info']['patch_size']
         self.num_forward_masks = agent_config['patch_info']['num_forward_masks']
@@ -50,14 +47,14 @@ class RLAB:
             self._generate_backward_masks(self.patch_size, self.num_backward_masks)).to(self.device)
         self.backward_expanded_mask = torch.ones(3, self.patch_size[0], self.patch_size[1], device=device)
 
-    def generate(self, x, y, idx =None):
+    def generate(self, x, y, idx=None):
         """
         generate an adversarial original_image and return it
         :param y:
         :param x:
         :return:
         """
-        
+
         self.less_5 = False
         self.less_20 = False
         self.less_30 = False
@@ -69,20 +66,15 @@ class RLAB:
         n_classes = prob_patch.shape[1]
         self.prev_gt_prob = prob_patch[0][self.gt_idx][0]
         self.prev_noise_var = self.noise_var
-        bt_imgs, bt_probs, pt_l2s = torch.tensor([], device=self.device), torch.tensor([],
-                                                                                       device=self.device), torch.tensor(
-            [], device=self.device)
         self.patch_idx_list = torch.tensor([], dtype=torch.int8, device=self.device)
         self.dilution_ratios = torch.tensor([], device=self.device)
         prob_patches = self.compute_prob_patches(perturbed_image, self.noise_type)
-        
 
         self.prev_l2 = torch.norm(x - perturbed_image)
 
         # create folder to save step outputs
         gt_idx_cpu = self.gt_idx.item()
 
-        s_time = time.strftime("%d-%m-%Y_%H-%M-%S")
         cur_episode_dir = "episode_c{}_{:05d}".format(gt_idx_cpu, idx)
         cur_episode_dir = os.path.join(self.log_dir, cur_episode_dir)
         if os.path.exists(cur_episode_dir):
@@ -94,24 +86,15 @@ class RLAB:
                   console=False)
         is_done = False
         for step in trange(self.max_steps, desc="RLAB", disable=False if self.verbose in [1] else True):
-            start_time = time.time()
-            # print("step______________", step)
             # select the patch places for noises to be added
             self.patch_idxes = self.select_patch(prob_patches, prob_patch, self.gt_idx,
-                                                 top_patches=self.n_forward_steps,  top_k=min(1000, n_classes))
+                                                 top_patches=self.n_forward_steps, top_k=min(1000, n_classes))
             self.patch_idx_list = torch.cat((self.patch_idx_list, self.patch_idxes))
             # add noise
             for i in range(self.n_forward_steps):
                 self.update_forward_mask(x, perturbed_image, method=self.noise_method)
-                perturbed_image = self.add_patch_noise(perturbed_image, self.patch_idxes[i], all_patches=False, noise_type=self.noise_type)
-            # remove noise
-            # n_backward_steps = 1 if self.n_forward_steps - 1 < 1 else self.n_forward_steps - 1
-            # for i in range(n_backward_steps):
-            #     prob_patch, pred, _ = self._predict(perturbed_image)
-            #     is_done = self._is_done(pred, self.gt_idx)
-            #     perturbed_image = self.remove_patch_noise(x, perturbed_image, torch.max(prob_patch, dim=1).values,
-            #                                               self.patch_idx_list)
-
+                perturbed_image = self.add_patch_noise(
+                    perturbed_image, self.patch_idxes[i], all_patches=False, noise_type=self.noise_type)
 
             prob_patches = self.compute_prob_patches(perturbed_image, self.noise_type)
             prob_patch, pred, _ = self._predict(perturbed_image)
@@ -122,21 +105,16 @@ class RLAB:
             self.dilution_ratios = torch.cat(
                 (self.dilution_ratios, torch.abs((gt_prob - self.prev_gt_prob) / (l2 - self.prev_l2)).unsqueeze(0)))
 
-            # log.print(
-            #     "{:.4f}, {:0.4f}, {:0.4f}".format((l2 - self.prev_l2).item(), (gt_prob - self.prev_gt_prob).item(),
-            #                                       self._get_moving_avg().item()),
-            #     console=False)
             self.prev_gt_prob = gt_prob
             self.prev_l2 = l2
             is_done = self._is_done(pred, self.gt_idx)
             # save the original
-            if step ==0:
+            if step == 0:
                 file_name = os.path.join(cur_episode_dir, "c{}_x.jpg".format(gt_idx_cpu))
                 self.save_img(to_original_format(un_standardize(x, self.dataset_mean, self.dataset_std, clip01=True)),
-                         file_name)
-            # print(pred, self.gt_idx)
+                              file_name)
             if is_done and self.l2_at_flip is None:
-               self.l2_at_flip = l2
+                self.l2_at_flip = l2
             if self.l2_at_flip is not None and is_done:
                 if l2 > self.l2_at_flip * 16:
                     file_name = os.path.join(cur_episode_dir, "c{}_x_16_adv.jpg".format(gt_idx_cpu))
@@ -195,8 +173,8 @@ class RLAB:
     @staticmethod
     def _is_done(y1, y2):
         return torch.logical_not(y1 == y2)
-    def save_img(self, img, filename, cmap=None) -> object:
 
+    def save_img(self, img, filename, cmap=None):
         if not os.path.exists(os.path.dirname(filename)):
             os.makedirs(os.path.dirname(filename))
         np.save(filename.replace('jpg', 'npy'), img)
@@ -206,20 +184,8 @@ class RLAB:
         from matplotlib import pyplot as plt
         plt.imshow(img, cmap=cmap, vmin=0, vmax=1)
         plt.axis('off')
-        # plt.show()
         plt.savefig(filename, bbox_inches='tight', pad_inches=0)
         plt.close()
-        # np.save(filename.replace('jpg', 'npy'), img)
-        # #
-        # # cv2.imwrite(filename, img * 255)
-        # # img2 = cv2.imread(filename)/255.
-        # img2 = np.load("img.npy")
-        # img2 = torch.tensor(img2, dtype=torch.float)
-        # img2 = img2.unsqueeze(0)
-        # img2 = img2.permute(0, 3, 1, 2)
-        # transform = transforms.Compose([transforms.Normalize(mean=self.dataset_mean, std=self.dataset_std)])
-        # img2 = transform(img2)
-        # prob_patch, pred, _ = self._predict(img2.cuda())
 
     def _get_moving_averages(self, window_size=7):
         window_averages = torch.tensor([], device=self.device), torch.tensor([], device=self.device), torch.tensor(
@@ -251,7 +217,7 @@ class RLAB:
                 in_mat.add_(chosen_mask)
             else:
                 in_mat.add_(chosen_mask)
-        else: # "DeadPixel":
+        else:  # "DeadPixel":
             assert chosen_mask is not None, "chosen_mask can't be None!"
             if all_patches:
                 in_mat = in_mat.permute(0, 3, 1, 2)
@@ -308,12 +274,7 @@ class RLAB:
 
             patches = patches.view(C, *self.patch_size, num_patches)
             patches = patches.permute(3, 0, 1, 2)
-            # if noise_type_selected == "GaussianBlur":
-            #     patches[patch_idx] = T.GaussianBlur(self.noise_kernel_size)(patches[patch_idx])
-            # else:
-            #    patches[patch_idx].add_(chosen_mask)
             self._add_noise(patches[patch_idx], noise_type=noise_type, chosen_mask=chosen_mask, all_patches=all_patches)
-
 
             patches = patches.view(1, num_patches, C * self.patch_size[0] * self.patch_size[1])
             patches = patches.permute(0, 2, 1)
@@ -325,7 +286,6 @@ class RLAB:
         return output
 
     def remove_patch_noise(self, original_image, perturbed_image, predicted_prob, patch_idx_list):
-        # torch.cuda.empty_cache()
         if original_image.dim() < 4:
             original_image_ = original_image.unsqueeze(0).clone()
         else:
@@ -374,33 +334,29 @@ class RLAB:
     def compute_prob_patches(self, perturbed_image, noise_type):
         perturbed_images = self.add_patch_noise(perturbed_image, all_patches=True, noise_type=noise_type)
         prob_batches = self._get_prob(perturbed_images)
-        # torch.cuda.empty_cache()
         return prob_batches
 
     @staticmethod
     def _generate_forward_masks(patch_size, num_masks, noise_mean, noise_var, dropout=0.5, noise_type='GaussianNoise'):
-
         channel = 3
         mask_list = []
 
         for i in range(num_masks):
             tot_elements = patch_size[0] * patch_size[1] * channel
-            temp = np.ones((tot_elements))
+            temp = np.ones(tot_elements)
             indices = np.random.choice(np.arange(temp.size), replace=False,
                                        size=int(temp.size * dropout))
             temp[indices] = 0
 
             if noise_type == 'GaussianNoise':
-                # noise = np.random.normal(mean, variance, tot_elements)
                 noise = np.empty(temp.shape)
                 noise = g_noise(noise, mode='gaussian', clip=True, mean=noise_mean, var=noise_var)
 
                 temp = np.multiply(temp, noise)
                 temp = np.reshape(temp, (channel, patch_size[0], patch_size[1]))
-            else: # having 0/1 values (all channels are the same)
+            else:  # having 0/1 values (all channels are the same)
                 temp = np.reshape(temp, (channel, patch_size[0], patch_size[1]))
                 temp[1] = temp[2] = temp[0]
-
 
             mask_list.append(temp)
 
@@ -409,16 +365,15 @@ class RLAB:
     @staticmethod
     def select_patch(patch_prob_vectors, patch_prob_vector, gt_idx, top_patches=5, top_k=10):
         # reduce the number of probability vectors for the speed up
-
         topn_prob_vectors, topn_prob_vector, gt_idx_, gt_idxes = get_top_prob_vectors(patch_prob_vectors,
-                                                                                      patch_prob_vector, gt_idx, n=top_k)
+                                                                                      patch_prob_vector, gt_idx,
+                                                                                      n=top_k)
         delta_prob_dilutions = get_delta_prob_dilutions(topn_prob_vectors, gt_idxes, topn_prob_vector, gt_idx_)
         top_patch_idxes = topk(delta_prob_dilutions, top_patches)
         return top_patch_idxes
 
     def update_adaptive_forward_mask(self, perturbed_image, max_noise=0.5):
         factor = self.noise_var / 5  # 100 max number of steps
-        patience = 10
         t_noise = self.prev_noise_var
         if len(self.dilution_ratios) < 1:
             return
@@ -442,7 +397,6 @@ class RLAB:
 
     def update_max_forward_mask(self, original_image, perturbed_image, max_noise=0.5, min_noise=0.005):
         factor = self.noise_var / 5  # 100 max number of steps
-        patience = 10
         if len(self.dilution_ratios) < 1:
             return
 
@@ -455,7 +409,8 @@ class RLAB:
                 self._generate_forward_masks(self.patch_size, self.num_forward_masks, self.noise_mean, noise_var,
                                              dropout=self.mask_dropout, noise_type=self.noise_type)).to(self.device)
 
-            pert_image = self.add_patch_noise(perturbed_image, self.patch_idxes[0], all_patches=False, noise_type=self.noise_type)
+            pert_image = self.add_patch_noise(
+                perturbed_image, self.patch_idxes[0], all_patches=False, noise_type=self.noise_type)
             prob_patch, _, _ = self._predict(pert_image)
             l2 = torch.norm(original_image - pert_image)
             # record the delta l2 and delta gt prob
@@ -472,7 +427,6 @@ class RLAB:
 
     @staticmethod
     def _generate_backward_masks(patch_size, num_masks):
-
         num_elements = patch_size[0] * patch_size[1]
         if patch_size[0] in [2, 4]:
             mask = np.ones(num_elements)
@@ -509,8 +463,6 @@ class RLAB:
 
         return outputs, predicted_class[0], tks
 
-
-
     def _get_prob(self, perturbed_images):
         n_batches = int(np.ceil(perturbed_images.shape[0] / float(self.batch_size)))
         prob_list = torch.tensor([], device=self.device)
@@ -545,7 +497,6 @@ class RLAB:
         plt.show()
 
     def _unfold_image(self, image, all_patches=False):
-
         B, C, H, W = image.size()
         num_patches = int((H / self.patch_size[0]) * (W / self.patch_size[1]))
 
@@ -566,7 +517,7 @@ class RLAB:
         return patches
 
     @staticmethod
-    def set_seed(seed) -> object:
+    def set_seed(seed):
         random.seed(seed)
         np.random.seed(seed)
         torch.manual_seed(seed)

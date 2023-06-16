@@ -1,18 +1,18 @@
-import numpy as np
-import pickle
-import torch
 import os
 import math
-from torch.nn import DataParallel
+import pickle
+import numpy as np
+import torch
 import torchvision.transforms as transforms
 from torch2trt import torch2trt
 import cv2
+
 
 def load_model(model_path, weight_path, input_shape=[3, 224, 224], model_trt=False, device='cpu', batch_size_trt=128):
     with open(model_path, 'rb') as m_file:
         try:
             model = pickle.load(m_file)
-        except Exception as e:
+        except Exception:
             model = torch.load(m_file)
     model.load_state_dict(torch.load(weight_path, map_location=device))
     model = model.to(device)
@@ -28,14 +28,11 @@ def load_model(model_path, weight_path, input_shape=[3, 224, 224], model_trt=Fal
             model.load_state_dict(torch.load(model_trt_name))
             print("Loaded the trt model.")
         else:
-
             print("Converting the model to a trt model...")
             model = torch2trt(model, [x], max_batch_size=math.ceil(batch_size_trt / len(device_ids)))
             torch.save(model.state_dict(), model_trt_name)
             print("The trt model saved at {}".format(model_trt_name))
 
-    # if len(device_ids) > 1:
-    #     model = DataParallel(model, device_ids=device_ids)
     return model
 
 
@@ -44,6 +41,7 @@ def compute_norm_4d(img1, img2, norm=2):
     input: in torch format
     """
     return torch.linalg.vector_norm((img1 - img2), norm, dim=(1, 2, 3))
+
 
 def compute_norm(img1, img2, norm=2):
     """
@@ -54,6 +52,7 @@ def compute_norm(img1, img2, norm=2):
     else:
         norms = torch.linalg.vector_norm((img1 - img2), norm, dim=(1, 2, 3))
         return norms[0] if len(norms) == 1 else norms
+
 
 def clip_channel_wise_4d(input, mins, maxs):
     """
@@ -66,29 +65,16 @@ def clip_channel_wise_4d(input, mins, maxs):
     input[:, 0, :, :] = torch.clamp(input[:, 0, :, :], mins[0], maxs[0])
     input[:, 1, :, :] = torch.clamp(input[:, 1, :, :], mins[1], maxs[1])
     input[:, 2, :, :] = torch.clamp(input[:, 2, :, :], mins[2], maxs[2])
-    # return input.squeeze(0)
     return input
 
 
-def save_img(img, filename, cmap=None) -> object:
-
+def save_img(img, filename, cmap=None):
     if not os.path.exists(os.path.dirname(filename)):
         os.makedirs(os.path.dirname(filename))
-    # import matplotlib
-    #
-    # matplotlib.use('Agg')
-    # from matplotlib import pyplot as plt
-    # plt.imshow(img, cmap=cmap, vmin=0, vmax=1)
-    # plt.axis('off')
-    # # plt.show()
-    # plt.savefig(filename, bbox_inches='tight', pad_inches=0)
-    # plt.close()
-    cv2.imwrite(filename, img*255)
+    cv2.imwrite(filename, img * 255)
 
 
 def topk(x, k):
-    # idx = np.argpartition(x, -k)[-k:]  # indices not sorted
-    # return idx[np.argsort(x[idx])][::-1]  # indices sorted by value from largest to smallest
     return torch.topk(x, k).indices
 
 
@@ -96,7 +82,8 @@ def get_delta_prob_dilutions(patch_prob_vectors, gt_idxes, patch_prob_vector, gt
     prob_dilution_vector = calc_prob_dilution_vec(patch_prob_vectors, gt_idxes)
     prob_dilution = calc_prob_dilution(patch_prob_vector, gt_idx)
 
-    delta_prob_dilutions = prob_dilution_vector - prob_dilution  # low=(self.min_pd - self.max_pd), high=(self.max_pd - self.min_pd)
+    # low=(self.min_pd - self.max_pd), high=(self.max_pd - self.min_pd)
+    delta_prob_dilutions = prob_dilution_vector - prob_dilution
     return delta_prob_dilutions
 
 
@@ -105,15 +92,9 @@ def calc_prob_dilution(prob_vector, gt_idx, use_log_prob=True, return_prob=False
     if return_prob:
         return prob_vector[gt_idx]
     if use_log_prob:
-        # prob_dilution = - 1/log(1/p_g) + 1/log(1/p_k1) + 1/log(1/p_k2) + ... + 1/log(1/p_kn)
         assert torch.round(torch.sum(_prob_vector), decimals=2) <= 1.
-        # _prob_vector[_prob_vector == 0] += torch.finfo(torch.float32).eps  # add a very small value to zero elements
-        # _prob_vector = torch.stack(
-        #     [transform_fun(_prob_vector[i], use_ln=False, k=200) for i in range(len(_prob_vector))])
-        # _prob_vector[gt_idx] = -_prob_vector[gt_idx]
-        # prob_dilution = torch.sum(_prob_vector)
-        # return prob_dilution
-        return 1/(torch.log10(prob_vector[gt_idx]-1.0133e-06)if prob_vector[gt_idx]==1 else torch.log10(prob_vector[gt_idx]))
+        return 1 / (torch.log10(prob_vector[gt_idx] - 1.0133e-06)
+                    if prob_vector[gt_idx] == 1 else torch.log10(prob_vector[gt_idx]))
 
     else:
         _prob_vector = torch.cat([_prob_vector[:gt_idx], _prob_vector[gt_idx + 1:]])
@@ -130,21 +111,17 @@ def calc_prob_dilution_vec(prob_vectors, gt_idx):
     :param gt_idx:
     :return:
     """
-    # if len(gt_idx) == 1:
-    #     gt_idx = torch.stack([gt_idx.squeeze()] * len(prob_vectors))
-    # print(len(prob_vectors), len(gt_idx))
     prob_dilution_vector = torch.stack(
         [calc_prob_dilution(prob_vectors[i], gt_idx[i]) for i in range(len(prob_vectors))])
     return prob_dilution_vector
 
+
 def transform_fun(prob, use_ln=True, k=50):
     assert prob <= 1.0
     if use_ln:
-        # constant = 50
         log_ = torch.log
         const = 9.4912  # 1 / (torch.log(torch.tensor(1 / 0.9)))
     else:
-        # constant = 200
         log_ = torch.log10
         const = 21.8543  # 1 / (log_(torch.tensor(1 / 0.9)))
     output = 1 / (log_(1 / prob)) if prob <= 0.9 else const + (prob - 0.9) * k
@@ -168,7 +145,8 @@ def get_top_prob_vectors(patch_prob_vectors, patch_prob_vector, gt_idx, n=10):
 
 def to_original_format(img, tensor_format=False):
     """
-    converts data from pytorch acceptable format(for images) (channel, height, width) -> (height, width, channel) and converts to numpy nd array
+    converts data from pytorch acceptable format(for images) (channel, height, width) -> (height, width, channel) and
+        converts to numpy nd array
     input: tensor
     output: numpy nd array
     """
