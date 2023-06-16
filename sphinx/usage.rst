@@ -47,7 +47,9 @@ The generated distorted data will have the structure following the example provi
                 ...
 
 
-There are both JPEG and NumPy arrays available with the applied distortions, as well as some metadata.
+There are both JPEG (for quick visualization) and NumPy arrays (as input to a model for benchmarking) at multiple noise
+levels available with the applied distortions, as well as some metadata.
+
 
 Zenodo Dataset Structure
 ------------------------
