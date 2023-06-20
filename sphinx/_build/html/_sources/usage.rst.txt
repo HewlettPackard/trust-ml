@@ -13,7 +13,7 @@ Example for having ResNet-50 as the victim model with which the adversarial samp
         --weight_path ./models/imagenet/weights/resnet50_imagenet1000.pt --dataset imagenet \
         --dataset_path ./datasets/imagenet/val --log_dir ./results/imagenet/resnet50
 
-The related dataset is not included in the repository. Import it to the dataset path that you specify.
+Note that the related dataset is not included in the repository. It has to be placed manually in the dataset path that you specify.
 
 **CLI arguments:**
 
