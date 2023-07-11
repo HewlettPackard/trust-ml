@@ -1,6 +1,13 @@
 # Benchmark Generation Framework with Customizable Distortions for Image Classifier Robustness
 
+The following notebook is a basic demonstration of our framework:
+
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Lhe2U9bfXy5IO7-bBK_qcr5jVExKDn-E?usp=sharing)
+
+For an advanced demonstration, follow the link to this notebook:
+
+[![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1XcFtsAiRxNHRX7evpHiyslbGHJFwzDrw?usp=sharing)
+
 
 This repository contains the datasets and code for the paper.
 
